@@ -1,16 +1,20 @@
 package com.manuel1n1.plugins
 
-import io.ktor.server.routing.*
-import io.ktor.http.*
+import com.manuel1n1.routes.loginRoutes
+//import com.manuel1n1.routes.userRoutes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
+import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
 
     routing {
-        get("/") {
-            call.respondText("Hello World!")
+        route("/api/v1") {
+            loginRoutes()
+            //userRoutes()
+            get("/") {
+                call.respondText("Hello World!")
+            }
         }
     }
 }
