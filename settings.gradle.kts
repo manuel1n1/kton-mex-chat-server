@@ -1,0 +1,1 @@
+rootProject.name = "com.manuel1n1.mex-chat-server"
