@@ -1,0 +1,28 @@
+@host = http://localhost
+@port = 3000
+@version = /api/v1
+
+
+###
+GET {{host}}:{{port}}{{version}}/
+
+###
+GET {{host}}:{{port}}{{version}}/
+
+###
+# @name  auth_token
+POST {{host}}:{{port}}{{version}}/auth/login
+Content-Type: application/json
+
+{
+    "userName": "manuel1n1",
+    "password": "123456"
+}
+
+###
+GET {{host}}:{{port}}{{version}}/user/hello
+Authorization: Bearer {{auth_token.response.body.token}}
+
+###
+GET {{host}}:{{port}}{{version}}/user/hello2
+Authorization: Bearer {{auth_token.response.body.token}}
