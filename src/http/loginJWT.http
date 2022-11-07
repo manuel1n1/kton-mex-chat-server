@@ -7,7 +7,7 @@
 GET {{host}}:{{port}}{{version}}/
 
 ###
-GET {{host}}:{{port}}{{version}}/
+GET {{host}}:{{port}}/json/kotlinx-serialization
 
 ###
 # @name  auth_token
