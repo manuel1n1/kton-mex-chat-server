@@ -10,12 +10,21 @@ GET {{host}}:{{port}}{{version}}/
 GET {{host}}:{{port}}/json/kotlinx-serialization
 
 ###
+POST {{host}}:{{port}}{{version}}/auth/register
+Content-Type: application/json
+
+{
+    "userName": "intelliJ5",
+    "password": "123456"
+}
+
+###
 # @name  auth_token
 POST {{host}}:{{port}}{{version}}/auth/login
 Content-Type: application/json
 
 {
-    "userName": "manuel1n1",
+    "userName": "intelliJ2",
     "password": "123456"
 }
 
