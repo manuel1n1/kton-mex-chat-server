@@ -6,6 +6,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.sql.Timestamp
+import java.time.Instant
 import java.util.*
 
 fun Route.userRoutes() {
@@ -28,7 +30,7 @@ fun Route.userRoutes() {
                         UUID.randomUUID(),
                         "manuel@mail.com",
                         "qwerty",
-                        Date()
+                        Timestamp.from(Instant.now())
                     )
                 )
             }
