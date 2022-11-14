@@ -1,12 +1,33 @@
 package com.manuel1n1.plugins
 
-import io.ktor.server.auth.*
-import io.ktor.util.*
+import com.manuel1n1.config.JWTConfig
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
 
 fun Application.configureSecurity() {
-    
+    val secret = environment.config.property("jwt.secret").getString()
+    val issuer = environment.config.property("jwt.issuer").getString()
+    val audience = environment.config.property("jwt.audience").getString()
+    val myRealm = environment.config.property("jwt.realm").getString()
+    val jwtConfig = JWTConfig(secret, issuer, audience)
 
+    install(Authentication) {
+        jwt("auth-jwt") {
+            realm = myRealm
+            verifier(jwtConfig.verifier)
+            validate { credential ->
+                if (credential.payload.getClaim("userName").asString() != "") {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
+            }
+            challenge { defaultScheme, realm ->
+                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+            }
+        }
+    }
 }

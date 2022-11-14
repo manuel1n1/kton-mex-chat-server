@@ -1,0 +1,37 @@
+@host = http://localhost
+@port = 3000
+@version = /api/v1
+
+
+###
+GET {{host}}:{{port}}{{version}}/
+
+###
+GET {{host}}:{{port}}/json/kotlinx-serialization
+
+###
+POST {{host}}:{{port}}{{version}}/auth/register
+Content-Type: application/json
+
+{
+    "userName": "intelliJ5",
+    "password": "123456"
+}
+
+###
+# @name  auth_token
+POST {{host}}:{{port}}{{version}}/auth/login
+Content-Type: application/json
+
+{
+    "userName": "intelliJ2",
+    "password": "123456"
+}
+
+###
+GET {{host}}:{{port}}{{version}}/user/hello
+Authorization: Bearer {{auth_token.response.body.token}}
+
+###
+GET {{host}}:{{port}}{{version}}/user/hello2
+Authorization: Bearer {{auth_token.response.body.token}}
