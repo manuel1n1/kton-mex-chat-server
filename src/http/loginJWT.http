@@ -33,11 +33,11 @@ GET {{host}}:{{port}}{{version}}/user/hello
 Authorization: Bearer {{auth_token.response.body.token}}
 
 ###
-GET {{host}}:{{port}}{{version}}/user/d4f0db71-a93c-4ca4-9a1d-7628638316e0
+GET {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
 
 ###
-PUT {{host}}:{{port}}{{version}}/user/d4f0db71-a93c-4ca4-9a1d-7628638316e0
+PUT {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
 Content-Type: application/json
 
@@ -46,5 +46,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{host}}:{{port}}{{version}}/user/d4f0db71-a93c-4ca4-9a1d-7628638316e0
+DELETE {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
