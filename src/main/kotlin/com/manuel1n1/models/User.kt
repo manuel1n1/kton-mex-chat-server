@@ -3,6 +3,7 @@ package com.manuel1n1.models
 import com.manuel1n1.utils.TimestampSerializer
 import com.manuel1n1.utils.UUIDSerializer
 import kotlinx.serialization.Serializable
+import org.jetbrains.annotations.NotNull
 import java.util.*
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
@@ -21,6 +22,11 @@ data class User(
 
 @Serializable
 data class UserLogin(val userName: String, val password: String)
+
+@Serializable
+data class Password(
+    @NotNull
+    val password: String)
 
 @Serializable
 data class UserData(
