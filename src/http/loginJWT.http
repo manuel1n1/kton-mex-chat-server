@@ -14,7 +14,7 @@ POST {{host}}:{{port}}{{version}}/auth/register
 Content-Type: application/json
 
 {
-    "userName": "intelliJ5",
+    "userName": "intelliJ",
     "password": "123456"
 }
 
@@ -24,7 +24,7 @@ POST {{host}}:{{port}}{{version}}/auth/login
 Content-Type: application/json
 
 {
-    "userName": "intelliJ2",
+    "userName": "intelliJ",
     "password": "123456"
 }
 
@@ -33,5 +33,18 @@ GET {{host}}:{{port}}{{version}}/user/hello
 Authorization: Bearer {{auth_token.response.body.token}}
 
 ###
-GET {{host}}:{{port}}{{version}}/user/hello2
+GET {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
+Authorization: Bearer {{auth_token.response.body.token}}
+
+###
+PUT {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
+Authorization: Bearer {{auth_token.response.body.token}}
+Content-Type: application/json
+
+{
+    "password": "123456"
+}
+
+###
+DELETE {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
