@@ -8,13 +8,13 @@ import kotlinx.serialization.Serializable
 data class JsonResponse(
     val statusCode: Int,
     val statusCodeDescription: String,
-    val error: String,
+    val errors: String,
     val message: String
 ) {
     constructor(statusCode: HttpStatusCode, error: String, message: String) : this(
         statusCode = statusCode.value,
         statusCodeDescription = statusCode.description,
-        error = error,
+        errors = error,
         message = message
     )
 }
