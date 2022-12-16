@@ -10,11 +10,11 @@ GET {{host}}:{{port}}{{version}}/
 GET {{host}}:{{port}}/json/kotlinx-serialization
 
 ###
-POST {{host}}:{{port}}{{version}}/auth/register
+POST {{host}}:{{port}}{{version}}/users
 Content-Type: application/json
 
 {
-    "userName": "intelliJ",
+    "email": "intelliJ",
     "password": "123456"
 }
 
@@ -29,15 +29,15 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}:{{port}}{{version}}/user/hello
+GET {{host}}:{{port}}{{version}}/users/hello
 Authorization: Bearer {{auth_token.response.body.token}}
 
 ###
-GET {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
+GET {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
 
 ###
-PUT {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
+PUT {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
 Content-Type: application/json
 
@@ -46,5 +46,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{host}}:{{port}}{{version}}/user/{{auth_token.response.body.user.id}}
+DELETE {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
 Authorization: Bearer {{auth_token.response.body.token}}
