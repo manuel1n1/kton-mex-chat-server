@@ -8,7 +8,7 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin123
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
   pgadmin:
@@ -17,4 +17,4 @@ services:
       - PGADMIN_DEFAULT_EMAIL=admin@mail.com
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
-      - 5050:80
+      - "5050:80"
