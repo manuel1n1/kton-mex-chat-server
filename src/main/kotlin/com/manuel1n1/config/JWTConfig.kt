@@ -5,8 +5,8 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import java.util.*
 
-class JWTConfig(secret: String, private val issuer: String, private val audience: String) {
-    private val validityInMs = 36_000_00 * 1
+class JWTConfig(secret: String, private val issuer: String,
+                private val audience: String, private val validityInMs: Int) {
     private val algorithm = Algorithm.HMAC256(secret)
 
     val verifier: JWTVerifier =

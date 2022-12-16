@@ -12,7 +12,8 @@ fun Application.configureSecurity() {
     val issuer = environment.config.property("jwt.issuer").getString()
     val audience = environment.config.property("jwt.audience").getString()
     val myRealm = environment.config.property("jwt.realm").getString()
-    val jwtConfig = JWTConfig(secret, issuer, audience)
+    val validateMS = environment.config.property("jwt.validity_ms").getString()
+    val jwtConfig = JWTConfig(secret, issuer, audience, validateMS.toInt())
 
     install(Authentication) {
         jwt("auth-jwt") {
@@ -25,7 +26,7 @@ fun Application.configureSecurity() {
                     null
                 }
             }
-            challenge { defaultScheme, realm ->
+            challenge { _, _ ->
                 call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
             }
         }

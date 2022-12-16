@@ -18,8 +18,9 @@ fun Route.loginRoutes() {
     val secret = environment?.config?.property("jwt.secret")?.getString()
     val issuer = environment?.config?.property("jwt.issuer")?.getString()
     val audience = environment?.config?.property("jwt.audience")?.getString()
+    val validateMS = environment?.config?.property("jwt.validity_ms")?.getString()
     val userDao = UserDao()
-    val jwtConfig = JWTConfig(secret!!, issuer!!, audience!!)
+    val jwtConfig = JWTConfig(secret!!, issuer!!, audience!!, validateMS!!.toInt())
 
     route("/auth") {
         post("/login") {
