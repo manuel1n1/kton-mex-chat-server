@@ -47,8 +47,6 @@ fun Route.userRoutes() {
             }
             get("/check-session") {
                 val userSession = call.sessions.get<UserSession>()
-                val header = call.request.header("refreshToken")
-                println(header)
                 if(userSession != null)
                     call.respondText("Session ID is ${userSession.id}.\nToken is ${userSession.token}")
                 else

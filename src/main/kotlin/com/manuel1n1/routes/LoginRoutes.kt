@@ -33,7 +33,11 @@ fun Route.loginRoutes() {
                 else if(!BCrypt.checkpw(user.password, userExist.password))
                     call.respond(status = HttpStatusCode.Conflict,
                         JsonResponse(HttpStatusCode.Conflict, "Incorrect Password", "Incorrect Password"))
-                call.respond(UserLoginResponse(UserData(userExist!!.id, userExist.email), jwtConfig.sign(user.userName)))
+                else {
+                    val token = jwtConfig.sign(user.userName)
+                    call.sessions.set(UserSession(userExist.id, token))
+                    call.respond(UserLoginResponse(UserData(userExist.id, userExist.email), token))
+                }
             } catch (ex: Exception) {
                 call.respondText(ex.message!!, status = HttpStatusCode.InternalServerError)
             }
