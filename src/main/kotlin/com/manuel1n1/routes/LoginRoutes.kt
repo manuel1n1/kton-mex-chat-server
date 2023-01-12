@@ -2,15 +2,15 @@ package com.manuel1n1.routes
 
 import com.manuel1n1.config.JWTConfig
 import com.manuel1n1.config.JsonResponse
-import com.manuel1n1.models.LoginRequest
 import com.manuel1n1.dao.UserDao
-import com.manuel1n1.models.UserData
-import com.manuel1n1.models.UserLoginResponse
+import com.manuel1n1.models.*
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import org.mindrot.jbcrypt.BCrypt
 import java.lang.Exception
 
@@ -33,9 +33,17 @@ fun Route.loginRoutes() {
                 else if(!BCrypt.checkpw(user.password, userExist.password))
                     call.respond(status = HttpStatusCode.Conflict,
                         JsonResponse(HttpStatusCode.Conflict, "Incorrect Password", "Incorrect Password"))
-                call.respond(UserLoginResponse(UserData(userExist!!.id!!, userExist.email), jwtConfig.sign(user.userName)))
+                call.respond(UserLoginResponse(UserData(userExist!!.id, userExist.email), jwtConfig.sign(user.userName)))
             } catch (ex: Exception) {
                 call.respondText(ex.message!!, status = HttpStatusCode.InternalServerError)
+            }
+        }
+        authenticate("auth-jwt") {
+            post("/logout") {
+                val infoSession = call.sessions.get<UserSession>()
+                println(infoSession)
+                call.sessions.clear<UserSession>()
+                call.respond(status = HttpStatusCode.OK, "Successful logout")
             }
         }
     }
