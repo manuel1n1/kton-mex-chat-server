@@ -46,5 +46,5 @@ object Users: Table() {
     val id:Column<UUID> = uuid("id")
     val email:Column<String> = varchar("email", 100)
     val password:Column<String> = varchar("password", 100)
-    val createAt:Column<Instant> = timestamp("create_at")
+    val createAt:Column<Instant> = timestamp("created_at")
 }
