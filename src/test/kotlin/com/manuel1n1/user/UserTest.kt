@@ -1,9 +1,6 @@
 package com.manuel1n1.user
 
-import com.manuel1n1.models.Password
-import com.manuel1n1.models.User
-import com.manuel1n1.models.UserLogin
-import com.manuel1n1.models.UserLoginResponse
+import com.manuel1n1.models.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -17,6 +14,7 @@ import kotlin.test.assertEquals
 
 class UserTest {
     private val baseRoute = "/api/v1"
+    private val usersRoute = "users"
     @Test
     fun testRegisterUser() = testApplication {
         //TODO Improve unit test with json validations
@@ -29,21 +27,21 @@ class UserTest {
             }
         }
         //user register
-        val createdUser = client.post("$baseRoute/auth/register") {
+        val createdUser = client.post("$baseRoute/$usersRoute") {
             contentType(ContentType.Application.Json)
-            setBody(UserLogin( "intelliJ", "123456"))
+            setBody(RegisterRequest( "intelliJ", "123456"))
         }
-        assertEquals(HttpStatusCode.OK, createdUser.status)
+        assertEquals(HttpStatusCode.Created, createdUser.status)
         //login
         val loginUser = client.post("$baseRoute/auth/login") {
             contentType(ContentType.Application.Json)
-            setBody(UserLogin( "intelliJ", "123456"))
+            setBody(LoginRequest( "intelliJ", "123456"))
         }
         assertEquals(HttpStatusCode.OK, loginUser.status)
         //check user hello
         val login = loginUser.body<UserLoginResponse>()
         assertEquals(createdUser.body<User>().id, login.user.id, "Not same id")
-        client.get("$baseRoute/user/hello"){
+        client.get("$baseRoute/users/hello"){
             contentType(ContentType.Application.Json)
             headers["Authorization"] = "Bearer ${login.token}"
         }.apply {
@@ -51,7 +49,7 @@ class UserTest {
             //assertContains("Hello, intelliJ! Token is expired at  ms. Hurry up!", bodyAsText())
         }
         //check user data
-        client.get("$baseRoute/user/${login.user.id}"){
+        client.get("$baseRoute/$usersRoute/${login.user.id}"){
             contentType(ContentType.Application.Json)
             headers["Authorization"] = "Bearer ${login.token}"
         }.apply {
@@ -59,7 +57,7 @@ class UserTest {
             //assertEquals(User, body())
         }
         //update password
-        client.put("$baseRoute/user/${login.user.id}"){
+        client.put("$baseRoute/$usersRoute/${login.user.id}"){
             contentType(ContentType.Application.Json)
             headers["Authorization"] = "Bearer ${login.token}"
             setBody(Password("123456"))
@@ -68,7 +66,7 @@ class UserTest {
             assertEquals("User updated", bodyAsText())
         }
         //delete user
-        client.delete("$baseRoute/user/${login.user.id}"){
+        client.delete("$baseRoute/$usersRoute/${login.user.id}"){
             headers["Authorization"] = "Bearer ${login.token}"
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
