@@ -14,11 +14,13 @@ import java.time.Instant
 @Serializable
 data class User(
     @Serializable(with = UUIDSerializer::class)
-    val id: UUID?,
+    val id: UUID,
     val email:String,
     var password:String,
     @Serializable(with = TimestampSerializer::class)
-    val createAt: Timestamp?)
+    val createAt: Timestamp)
+
+data class UserSession(val id: UUID, val token: String)
 
 @Serializable
 data class LoginRequest(val userName: String, val password: String)
@@ -44,5 +46,5 @@ object Users: Table() {
     val id:Column<UUID> = uuid("id")
     val email:Column<String> = varchar("email", 100)
     val password:Column<String> = varchar("password", 100)
-    val createAt:Column<Instant> = timestamp("create_at")
+    val createAt:Column<Instant> = timestamp("created_at")
 }

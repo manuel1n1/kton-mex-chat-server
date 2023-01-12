@@ -4,6 +4,7 @@ import com.manuel1n1.config.JsonResponse
 import com.manuel1n1.dao.UserDao
 import com.manuel1n1.models.Password
 import com.manuel1n1.models.RegisterRequest
+import com.manuel1n1.models.UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,6 +12,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.util.*
 
@@ -42,6 +44,13 @@ fun Route.userRoutes() {
                 val username = principal!!.payload.getClaim("userName").asString()
                 val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
                 call.respondText("Hello, $username! Token is expired at $expiresAt ms. Hurry up!")
+            }
+            get("/check-session") {
+                val userSession = call.sessions.get<UserSession>()
+                if(userSession != null)
+                    call.respondText("Session ID is ${userSession.id}.\nToken is ${userSession.token}")
+                else
+                    call.respondText("Session doesn't exist or is expired")
             }
             get("/{id}") {
                 try {
