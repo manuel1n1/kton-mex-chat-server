@@ -29,8 +29,18 @@ Content-Type: application/json
 }
 
 ###
+POST {{host}}:{{port}}{{version}}/auth/logout
+Authorization: Bearer {{auth_token.response.body.token}}
+user_session: {{auth_token.response.headers.user_session}}
+
+###
 GET {{host}}:{{port}}{{version}}/users/hello
 Authorization: Bearer {{auth_token.response.body.token}}
+
+###
+GET {{host}}:{{port}}{{version}}/users/check-session
+Authorization: Bearer {{auth_token.response.body.token}}
+user_session: {{auth_token.response.headers.user_session}}
 
 ###
 GET {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
