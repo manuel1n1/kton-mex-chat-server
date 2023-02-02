@@ -15,7 +15,8 @@ Content-Type: application/json
 
 {
     "email": "intelliJ",
-    "password": "123456"
+    "password": "123456",
+    "confirmPassword": "123456"
 }
 
 ###
@@ -30,25 +31,25 @@ Content-Type: application/json
 
 ###
 POST {{host}}:{{port}}{{version}}/auth/logout
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}
 user_session: {{auth_token.response.headers.user_session}}
 
 ###
 GET {{host}}:{{port}}{{version}}/users/hello
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}
 
 ###
 GET {{host}}:{{port}}{{version}}/users/check-session
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}
 user_session: {{auth_token.response.headers.user_session}}
 
 ###
 GET {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}
 
 ###
 PUT {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}
 Content-Type: application/json
 
 {
@@ -57,4 +58,4 @@ Content-Type: application/json
 
 ###
 DELETE {{host}}:{{port}}{{version}}/users/{{auth_token.response.body.user.id}}
-Authorization: Bearer {{auth_token.response.body.token}}
+Authorization: Bearer {{auth_token.response.body.accessToken}}

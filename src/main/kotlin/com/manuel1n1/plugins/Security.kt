@@ -1,7 +1,7 @@
 package com.manuel1n1.plugins
 
 import com.manuel1n1.config.JWTConfig
-import com.manuel1n1.models.UserSession
+import com.manuel1n1.models.sessions.UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

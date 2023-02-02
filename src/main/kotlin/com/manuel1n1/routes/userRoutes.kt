@@ -2,9 +2,9 @@ package com.manuel1n1.routes
 
 import com.manuel1n1.config.JsonResponse
 import com.manuel1n1.dao.UserDao
-import com.manuel1n1.models.Password
-import com.manuel1n1.models.RegisterRequest
-import com.manuel1n1.models.UserSession
+import com.manuel1n1.models.request.SignUpRequest
+import com.manuel1n1.models.request.UpdatePasswordRequest
+import com.manuel1n1.models.sessions.UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -14,16 +14,19 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.koin.ktor.ext.inject
+import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
 fun Route.userRoutes() {
     val uniqueViolationException = "23505"
-    val userDao = UserDao()
+    val userDao by inject<UserDao>()
     route("/users") {
         post {
             try {
-                val user : RegisterRequest = call.receive()
-                val newUser = userDao.insert(user)
+                val user : SignUpRequest = call.receive()
+                val password = BCrypt.hashpw(user.password, BCrypt.gensalt(10))
+                val newUser = userDao.insert(user.email, password)
                 call.respond(status = HttpStatusCode.Created, newUser)
             } catch (ex: java.lang.Exception) {
                 val code = (ex as? ExposedSQLException)
@@ -59,7 +62,7 @@ fun Route.userRoutes() {
                         call.respond(status = HttpStatusCode.BadRequest,
                             JsonResponse(HttpStatusCode.BadRequest, "Id empty", "Id empty"))
                     else {
-                        val user = userDao.getUserById(UUID.fromString(id))
+                        val user = userDao.findByID(UUID.fromString(id))
                         if(user == null)
                             call.respond(status = HttpStatusCode.NotFound,
                                 JsonResponse(HttpStatusCode.NotFound, "User not found", "User not found"))
@@ -75,17 +78,18 @@ fun Route.userRoutes() {
             put("/{id}") {
                 try {
                     val id = call.parameters["id"].toString()
-                    val updatePassword : Password = call.receive()
+                    val updatePassword : UpdatePasswordRequest = call.receive()
                     if(id.isEmpty())
                         call.respond(status = HttpStatusCode.BadRequest,
                             JsonResponse(HttpStatusCode.BadRequest, "Id empty", "Id empty"))
                     else {
-                        val user = userDao.getUserById(UUID.fromString(id))
+                        val user = userDao.findByID(UUID.fromString(id))
                         if(user == null)
                             call.respond(status = HttpStatusCode.NotFound,
                                 JsonResponse(HttpStatusCode.NotFound, "User not found", "User not found"))
-                        else if(updatePassword.password.isNotEmpty()) {
-                            if(userDao.edit(updatePassword, UUID.fromString(id)))
+                        else if(updatePassword.newPassword.isNotEmpty()) {
+                            val password = BCrypt.hashpw(updatePassword.newPassword, BCrypt.gensalt(10))
+                            if(userDao.updatePassword(UUID.fromString(id), password))
                                 call.respondText("User updated")
                             else
                                 throw Exception("Something went wrong, try again")

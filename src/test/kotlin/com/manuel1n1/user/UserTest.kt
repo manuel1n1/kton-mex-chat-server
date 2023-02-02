@@ -1,6 +1,10 @@
 package com.manuel1n1.user
 
-import com.manuel1n1.models.*
+import com.manuel1n1.models.request.LoginRequest
+import com.manuel1n1.models.request.SignUpRequest
+import com.manuel1n1.models.request.UpdatePasswordRequest
+import com.manuel1n1.models.response.User
+import com.manuel1n1.models.response.UserLogin
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -29,7 +33,7 @@ class UserTest {
         //user register
         val createdUser = client.post("$baseRoute/$usersRoute") {
             contentType(ContentType.Application.Json)
-            setBody(RegisterRequest( "intelliJ", "123456"))
+            setBody(SignUpRequest( "intelliJ", "123456", "123456"))
         }
         assertEquals(HttpStatusCode.Created, createdUser.status)
         //login
@@ -39,11 +43,11 @@ class UserTest {
         }
         assertEquals(HttpStatusCode.OK, loginUser.status)
         //check user hello
-        val login = loginUser.body<UserLoginResponse>()
+        val login = loginUser.body<UserLogin>()
         assertEquals(createdUser.body<User>().id, login.user.id, "Not same id")
         client.get("$baseRoute/users/hello"){
             contentType(ContentType.Application.Json)
-            headers["Authorization"] = "Bearer ${login.token}"
+            headers["Authorization"] = "Bearer ${login.accessToken}"
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
             //assertContains("Hello, intelliJ! Token is expired at  ms. Hurry up!", bodyAsText())
@@ -51,7 +55,7 @@ class UserTest {
         //check user data
         client.get("$baseRoute/$usersRoute/${login.user.id}"){
             contentType(ContentType.Application.Json)
-            headers["Authorization"] = "Bearer ${login.token}"
+            headers["Authorization"] = "Bearer ${login.accessToken}"
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
             //assertEquals(User, body())
@@ -59,15 +63,16 @@ class UserTest {
         //update password
         client.put("$baseRoute/$usersRoute/${login.user.id}"){
             contentType(ContentType.Application.Json)
-            headers["Authorization"] = "Bearer ${login.token}"
-            setBody(Password("123456"))
+            headers["Authorization"] = "Bearer ${login.accessToken}"
+            setBody(UpdatePasswordRequest(
+                "123456", "1234567", "1234567"))
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("User updated", bodyAsText())
         }
         //delete user
         client.delete("$baseRoute/$usersRoute/${login.user.id}"){
-            headers["Authorization"] = "Bearer ${login.token}"
+            headers["Authorization"] = "Bearer ${login.accessToken}"
         }.apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("User deleted", bodyAsText())
