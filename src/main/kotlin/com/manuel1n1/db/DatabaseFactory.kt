@@ -9,14 +9,15 @@ import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.component.KoinComponent
 
-object DatabaseFactory {
+object DatabaseFactory : DatabaseFactoryInterface, KoinComponent{
     private val appConfig = HoconApplicationConfig(ConfigFactory.load())
     private val dbUrl = appConfig.property("db.jdbcURL").getString()
     private val dbUser = appConfig.property("db.jdbcUser").getString()
     private val dbPassword = appConfig.property("db.password").getString()
 
-    init {
+    override fun init() {
         Database.connect(hikari())
         val flyway = Flyway.configure().dataSource(dbUrl, dbUser, dbPassword).load()
         flyway.baseline()
@@ -40,4 +41,8 @@ object DatabaseFactory {
         withContext(Dispatchers.IO) {
             transaction { block() }
         }
+}
+
+interface DatabaseFactoryInterface {
+    fun init()
 }
