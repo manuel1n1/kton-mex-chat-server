@@ -42,8 +42,10 @@ dependencies {
     //Logger
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
-    //Koin for Kotlin
-    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    // Koin for Ktor
+    implementation ("io.insert-koin:koin-ktor:$koinVersion")
+    // SLF4J Logger
+    implementation ("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     //Hikari
     implementation("com.zaxxer:HikariCP:$hikariVersion")

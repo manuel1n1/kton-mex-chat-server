@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 /*message string variable will keep for short description*/
 @Serializable
-data class JsonResponse(
+data class GeneralResponse(
     val statusCode: Int,
     val statusCodeDescription: String,
     val errors: String,

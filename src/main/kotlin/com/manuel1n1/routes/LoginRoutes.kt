@@ -1,30 +1,29 @@
 package com.manuel1n1.routes
 
 import com.manuel1n1.config.JWTConfig
-import com.manuel1n1.config.JsonResponse
-import com.manuel1n1.dao.UserDao
-import com.manuel1n1.models.*
-import io.ktor.http.*
+import com.manuel1n1.controller.auth.AuthController
+import com.manuel1n1.models.request.LoginRequest
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
-import org.mindrot.jbcrypt.BCrypt
-import java.lang.Exception
+import org.koin.ktor.ext.inject
 
 fun Route.loginRoutes() {
     val secret = environment?.config?.property("jwt.secret")?.getString()
     val issuer = environment?.config?.property("jwt.issuer")?.getString()
     val audience = environment?.config?.property("jwt.audience")?.getString()
     val validateMS = environment?.config?.property("jwt.validity_ms")?.getString()
-    val userDao = UserDao()
     val jwtConfig = JWTConfig(secret!!, issuer!!, audience!!, validateMS!!.toInt())
+
+    val authController by inject<AuthController>()
 
     route("/auth") {
         post("/login") {
-            try {
+            val loginRequest : LoginRequest = call.receive()
+            val loginResponse = authController.login(loginRequest)
+            call.respond(loginResponse)
+            /*try {
                 val user : LoginRequest = call.receive()
                 val userExist = userDao.getUserByEmail(user.userName)
                 if(userExist == null)
@@ -40,15 +39,15 @@ fun Route.loginRoutes() {
                 }
             } catch (ex: Exception) {
                 call.respondText(ex.message!!, status = HttpStatusCode.InternalServerError)
-            }
+            }*/
         }
-        authenticate("auth-jwt") {
+        /*authenticate("auth-jwt") {
             post("/logout") {
                 val infoSession = call.sessions.get<UserSession>()
                 println(infoSession)
                 call.sessions.clear<UserSession>()
                 call.respond(status = HttpStatusCode.OK, "Successful logout")
             }
-        }
+        }*/
     }
 }
